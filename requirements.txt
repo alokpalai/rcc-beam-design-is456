@@ -1,0 +1,7 @@
+numpy>=1.26
+pandas>=2.2
+matplotlib>=3.8
+streamlit>=1.35
+reportlab>=4.1
+openpyxl>=3.1
+pytest>=8.0
