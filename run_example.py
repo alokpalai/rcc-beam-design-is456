@@ -28,6 +28,8 @@ from app.reinforcement import (
 )
 from app.materials import fy as get_fy
 from app.serviceability import check_deflection_span_to_depth
+from app.serviceability import check_deflection_span_to_depth
+from app.diagrams import compute_sfd_bmd_simply_supported_udl, plot_sfd_bmd
 
 # --- Inputs ---------------------------------------------------------------
 BEAM_NAME = "B1"
@@ -95,6 +97,11 @@ deflection = check_deflection_span_to_depth(
     ast_provided_mm2=bars.area_provided_mm2, b_mm=WIDTH_MM,
 )
 
+# --- 9: SFD/BMD -----------------------------------------------------------
+x, V, M = compute_sfd_bmd_simply_supported_udl(SPAN_MM, loads.factored_udl)
+fig = plot_sfd_bmd(x, V, M, beam_name=BEAM_NAME, save_path=f"sfd_bmd_{BEAM_NAME}.png")
+
+
 # --- Report -----------------------------------------------------------------
 print("=" * 55)
 print(f"RCC BEAM DESIGN SUMMARY - {BEAM_NAME}")
@@ -145,3 +152,4 @@ overall_safe = flex_status == "SAFE" and shear.is_safe and deflection.is_safe
 print(f"OVERALL STATUS: {'SAFE' if overall_safe else 'NOT SAFE - see above'}")
 print("NOTE: Ductile-detailing checks (IS 13920) and crack-width checks are")
 print("      not implemented yet.")
+print(f"SFD/BMD saved to: sfd_bmd_{BEAM_NAME}.png")

@@ -27,7 +27,8 @@ rcc-beam-design-is456/
 │   ├── flexure.py       # singly + doubly reinforced flexural design (Annex G)
 │   ├── shear.py         # shear design, vertical stirrups (Cl. 40)
 │   ├── reinforcement.py  # effective depth, bar selection/optimization, Ld
-│   └── serviceability.py # deflection check, span/depth method (Cl. 23.2.1)
+│   ├── serviceability.py # deflection check, span/depth method (Cl. 23.2.1)
+│   └── diagrams.py       # SFD/BMD generation (matplotlib)
 ├── tests/               # pytest reference-example checks
 ├── excel/               # (planned) Excel verification workbook
 ├── reports/             # (planned) generated PDF design reports
@@ -46,7 +47,7 @@ rcc-beam-design-is456/
 - [x] Bar selection / optimization, spacing checks, development length
 - [x] Serviceability (span/depth ratio, deflection) - Cl. 23.2
 - [x] Doubly reinforced flexure design (Annex G-1.2)
-- [ ] SFD/BMD plots (matplotlib)
+- [x] SFD/BMD plots (matplotlib)
 - [ ] Excel verification workbook
 - [ ] Streamlit GUI
 - [ ] Reinforcement drawing schematic
@@ -115,12 +116,3 @@ independent Excel workbook cross-check is planned as a later milestone.
   deflection calculation); flanged-beam factor kf is fixed at 1.0
   (rectangular sections only).
 - No crack-width or ductile-detailing (IS 13920) checks yet.
-
-## Acknowledgments
-
-Built by Alok (Civil Engineering student) as a portfolio project, working
-through the IS 456 provisions and code structure milestone by milestone with
-[Claude](https://claude.ai) (Anthropic) as a pair-programming assistant -
-used for drafting formulas/functions against cited code clauses, catching
-bugs, and structuring the codebase. All design decisions, verification
-against hand calculations, and testing were reviewed and run by the author.
