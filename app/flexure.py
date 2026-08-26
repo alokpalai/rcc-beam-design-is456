@@ -16,6 +16,8 @@ References (IS 456:2000):
 import math
 from dataclasses import dataclass
 
+import numpy as np
+
 from app.materials import fck as get_fck, fy as get_fy, xu_max_d
 
 
@@ -126,4 +128,102 @@ def design_flexure_singly_reinforced(
         ast_max_mm2=ast_max,
         ast_design_mm2=ast_design,
         within_min_max_limits=within_limits,
+    )
+
+# --- Doubly reinforced design (IS 456 Annex G-1.2) --------------------------
+# Use design_flexure_doubly_reinforced() only when design_flexure_singly_reinforced()
+# reports needs_doubly_reinforced=True (i.e. Mu > Mu,lim).
+
+# Design stress in compression reinforcement, fsc (N/mm2), as a function of
+# d'/d - SP:16 (Design Aids to IS 456) design-aid table for Fe415 and Fe500.
+# Fe250 is elastic-perfectly-plastic and yields well before these d'/d
+# ratios, so fsc = 0.87*fy is used directly for Fe250 instead of a table.
+FSC_TABLE_D_DASH_OVER_D = [0.05, 0.10, 0.15, 0.20]
+FSC_TABLE = {
+    "Fe415": [355, 353, 342, 329],
+    "Fe500": [412, 412, 395, 370],
+}
+
+# fcc = design compressive stress in concrete at the level of the compression
+# steel - standard approximation used in doubly-reinforced design (SP:16).
+CONCRETE_STRESS_AT_COMPRESSION_STEEL_FACTOR = 0.45
+
+
+def calc_fsc_N_mm2(steel_grade: str, d_dash_mm: float, d_mm: float) -> float:
+    """
+    Design stress in compression reinforcement, fsc (N/mm2) - SP:16 design aid,
+    interpolated over d'/d = 0.05 to 0.20 (typical practical range).
+    """
+    if steel_grade == "Fe250":
+        return 0.87 * get_fy(steel_grade)
+    if steel_grade not in FSC_TABLE:
+        raise ValueError(f"No fsc table for grade '{steel_grade}'. Supported: Fe250, Fe415, Fe500")
+
+    d_dash_over_d = d_dash_mm / d_mm
+    return float(np.interp(d_dash_over_d, FSC_TABLE_D_DASH_OVER_D, FSC_TABLE[steel_grade]))
+
+
+@dataclass
+class DoublyReinforcedResult:
+    mu_kNm: float
+    mu_lim_kNm: float
+    mu2_kNm: float          # additional moment beyond Mu,lim, carried by Asc/Ast2
+    ast1_mm2: float          # tension steel balancing the Mu,lim (concrete) part
+    ast2_mm2: float          # additional tension steel balancing Mu2
+    ast_total_mm2: float     # Ast1 + Ast2
+    asc_mm2: float            # compression steel required
+    fsc_N_mm2: float          # design stress used for the compression steel
+    ast_max_mm2: float
+    asc_max_mm2: float
+    within_limits: bool
+
+
+def design_flexure_doubly_reinforced(
+    b_mm: float,
+    d_mm: float,
+    d_dash_mm: float,
+    overall_depth_mm: float,
+    mu_kNm: float,
+    fck_grade: str,
+    steel_grade: str,
+) -> DoublyReinforcedResult:
+    """
+    Doubly reinforced flexure design - IS 456 Annex G-1.2.
+
+    d_dash_mm is the effective cover to the centroid of compression
+    reinforcement (distance from the extreme compression fibre), typically
+    35-50 mm.
+    """
+    mu_lim = calc_mu_lim_kNm(b_mm, d_mm, fck_grade, steel_grade)
+    if mu_kNm <= mu_lim:
+        raise ValueError(
+            f"Mu ({mu_kNm:.1f} kNm) <= Mu,lim ({mu_lim:.1f} kNm) - "
+            "use design_flexure_singly_reinforced instead."
+        )
+
+    fck_val = get_fck(fck_grade)
+    fy_val = get_fy(steel_grade)
+    ratio = xu_max_d(steel_grade)
+    xu_max = ratio * d_mm
+
+    mu2 = mu_kNm - mu_lim
+    mu2_Nmm = mu2 * 1e6
+
+    ast1 = 0.36 * fck_val * b_mm * xu_max / (0.87 * fy_val)
+    ast2 = mu2_Nmm / (0.87 * fy_val * (d_mm - d_dash_mm))
+    ast_total = ast1 + ast2
+
+    fsc = calc_fsc_N_mm2(steel_grade, d_dash_mm, d_mm)
+    fcc = CONCRETE_STRESS_AT_COMPRESSION_STEEL_FACTOR * fck_val
+    asc = ast2 * 0.87 * fy_val / (fsc - fcc)
+
+    ast_max = calc_ast_max_mm2(b_mm, overall_depth_mm)   # Cl. 26.5.1.1(b)
+    asc_max = calc_ast_max_mm2(b_mm, overall_depth_mm)   # Cl. 26.5.1.2, same 0.04bD limit
+    within_limits = ast_total <= ast_max and asc <= asc_max
+
+    return DoublyReinforcedResult(
+        mu_kNm=mu_kNm, mu_lim_kNm=mu_lim, mu2_kNm=mu2,
+        ast1_mm2=ast1, ast2_mm2=ast2, ast_total_mm2=ast_total,
+        asc_mm2=asc, fsc_N_mm2=fsc,
+        ast_max_mm2=ast_max, asc_max_mm2=asc_max, within_limits=within_limits,
     )
