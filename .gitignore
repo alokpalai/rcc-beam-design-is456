@@ -4,4 +4,4 @@ __pycache__/
 .pytest_cache/
 *.egg-info/
 .DS_Store
-sfd_bmd_*.png
+/sfd_bmd_*.png

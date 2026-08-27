@@ -10,9 +10,9 @@ schematic, all driven by the same design pipeline.
 Load calculation, singly and doubly reinforced flexural design, shear design,
 bar selection/optimization, development length, serviceability (deflection),
 and reinforcement detailing are all implemented, tested, and cross-verified
-across four independent outputs (terminal, Excel, GUI, PDF). See
-[Roadmap](#roadmap) for what's built vs. what's still planned (additional
-load cases and sensitivity analysis).
+across four independent outputs (terminal, Excel, GUI, PDF). Additional load
+cases (point loads, cantilever, continuous beams) and sensitivity analysis
+are potential future extensions.
 
 ## Screenshots
 
@@ -60,22 +60,6 @@ rcc-beam-design-is456/
 ├── requirements.txt
 └── README.md
 ```
-
-## Roadmap
-
-- [x] Repo scaffold
-- [x] Load calculation (simply supported, UDL)
-- [x] Flexural design - singly reinforced (IS 456 Annex G)
-- [x] Shear design (tau_v, tau_c, stirrup spacing) - Cl. 40
-- [x] Bar selection / optimization, spacing checks, development length
-- [x] Serviceability (span/depth ratio, deflection) - Cl. 23.2
-- [x] Doubly reinforced flexure design (Annex G-1.2)
-- [x] SFD/BMD plots (matplotlib)
-- [x] Excel verification workbook - Inputs, Load Calc, Flexural Design, Shear Design, Reinforcement, Serviceability, Design Summary dashboard
-- [x] Streamlit GUI - interactive form (left) + live results, status badges, and SFD/BMD chart (right)
-- [x] PDF report generation - 12-section design report (ReportLab), matches run_example.py/streamlit_app.py exactly
-- [x] Reinforcement drawing schematic - longitudinal elevation + cross-section, bar counts/diameters/spacing, stirrup ticks, dimensions (design visualization, not construction-ready)
-- [ ] Additional load cases (point loads, cantilever, continuous), sensitivity analysis
 
 ## IS 456 provisions implemented so far
 
