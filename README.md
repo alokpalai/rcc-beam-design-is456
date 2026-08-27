@@ -28,14 +28,16 @@ rcc-beam-design-is456/
 │   ├── shear.py         # shear design, vertical stirrups (Cl. 40)
 │   ├── reinforcement.py  # effective depth, bar selection/optimization, Ld
 │   ├── serviceability.py # deflection check, span/depth method (Cl. 23.2.1)
-│   └── diagrams.py       # SFD/BMD generation (matplotlib)
+│   ├── diagrams.py       # SFD/BMD generation (matplotlib)
+│   └── drawing.py        # reinforcement detailing schematic (matplotlib)
 ├── tests/               # pytest reference-example checks
 ├── excel/               # Excel verification workbook (build_workbook.py + generated .xlsx)
 ├── reports/             # generated PDF design reports (generate_report.py + generated .pdf)
-├── drawings/             # (planned) reinforcement detailing schematics
+├── drawings/             # reinforcement detailing schematics (generate_drawing.py + generated .png)
 ├── run_example.py        # scratch script: end-to-end demo
 ├── streamlit_app.py      # interactive GUI - inputs left, results right
 ├── generate_report.py    # PDF design report generator (ReportLab)
+├── generate_drawing.py   # reinforcement detailing schematic generator
 ├── requirements.txt
 └── README.md
 ```
@@ -53,7 +55,7 @@ rcc-beam-design-is456/
 - [x] Excel verification workbook - Inputs, Load Calc, Flexural Design, Shear Design, Reinforcement, Serviceability, Design Summary dashboard
 - [x] Streamlit GUI - interactive form (left) + live results, status badges, and SFD/BMD chart (right)
 - [x] PDF report generation - 12-section design report (ReportLab), matches run_example.py/streamlit_app.py exactly
-- [ ] Reinforcement drawing schematic
+- [x] Reinforcement drawing schematic - longitudinal elevation + cross-section, bar counts/diameters/spacing, stirrup ticks, dimensions (design visualization, not construction-ready)
 - [ ] Additional load cases (point loads, cantilever, continuous), sensitivity analysis
 
 ## IS 456 provisions implemented so far
@@ -114,6 +116,21 @@ reinforcement, serviceability, an IS 456 compliance table, a final summary
 with SAFE/FAIL status, and the SFD/BMD chart), using the exact same
 calculation engine as `run_example.py` and `streamlit_app.py`.
 
+## Generating a reinforcement drawing
+
+```bash
+python generate_drawing.py
+```
+
+Creates `drawings/Beam_Drawing_<name>.png` - a longitudinal elevation and
+cross-section showing bar count/diameter, stirrup spacing, cover, and
+dimensions, using the same design pipeline as the other tools. For a singly
+reinforced section it draws two nominal 10mm hanger bars at the top (a real
+detailing practice to hold the stirrups - not a strength requirement); for a
+doubly reinforced section it draws the actual calculated compression steel
+instead. This is a design visualization, not a construction-ready drawing -
+it omits lap lengths, bend details, curtailment, and a bar bending schedule.
+
 ## Running tests
 
 ```bash
@@ -146,3 +163,6 @@ same beam.
   deflection calculation); flanged-beam factor kf is fixed at 1.0
   (rectangular sections only).
 - No crack-width or ductile-detailing (IS 13920) checks yet.
+- The reinforcement drawing is a schematic (bar count/diameter/spacing to
+  approximate scale) for review purposes only - not construction-ready
+  (no lap lengths, bend/hook details, curtailment, or bar bending schedule).
