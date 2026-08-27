@@ -1,13 +1,32 @@
 # RCC Beam Design & Verification Tool (IS 456:2000)
 
 A Python-based reinforced concrete beam design engine implementing IS 456:2000
-limit-state provisions, being built incrementally as an engineering + software
-crossover project.
+limit-state provisions - a Civil Engineering + software crossover project
+combining a tested calculation core, an independent Excel verification
+workbook, an interactive GUI, PDF reports, and a reinforcement detailing
+schematic, all driven by the same design pipeline.
 
-**Status: early development.** Currently implemented: load calculation, singly
-and doubly reinforced flexural design, shear design, reinforcement detailing,
-and serviceability (deflection) checks for a simply supported beam under UDL.
-See [Roadmap](#roadmap) below for what's built vs. planned.
+**Status: functionally complete for a simply supported beam under UDL.**
+Load calculation, singly and doubly reinforced flexural design, shear design,
+bar selection/optimization, development length, serviceability (deflection),
+and reinforcement detailing are all implemented, tested, and cross-verified
+across four independent outputs (terminal, Excel, GUI, PDF). See
+[Roadmap](#roadmap) for what's built vs. what's still planned (additional
+load cases and sensitivity analysis).
+
+## Screenshots
+
+**Shear force / bending moment diagram:**
+
+![SFD/BMD](docs/sfd_bmd_B1.png)
+
+**Reinforcement detailing schematic:**
+
+![Reinforcement drawing](drawings/Beam_Drawing_B1.png)
+
+**Interactive GUI:** see `docs/streamlit_screenshot.png` (add your own by
+running `python -m streamlit run streamlit_app.py`, submitting a design, and
+saving a screenshot there).
 
 ## Problem statement
 
