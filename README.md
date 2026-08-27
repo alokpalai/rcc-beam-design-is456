@@ -34,6 +34,7 @@ rcc-beam-design-is456/
 ├── reports/             # (planned) generated PDF design reports
 ├── drawings/             # (planned) reinforcement detailing schematics
 ├── run_example.py        # scratch script: end-to-end demo
+├── streamlit_app.py      # interactive GUI - inputs left, results right
 ├── requirements.txt
 └── README.md
 ```
@@ -49,7 +50,7 @@ rcc-beam-design-is456/
 - [x] Doubly reinforced flexure design (Annex G-1.2)
 - [x] SFD/BMD plots (matplotlib)
 - [x] Excel verification workbook - Inputs, Load Calc, Flexural Design, Shear Design, Reinforcement, Serviceability, Design Summary dashboard
-- [ ] Streamlit GUI
+- [x] Streamlit GUI - interactive form (left) + live results, status badges, and SFD/BMD chart (right)
 - [ ] Reinforcement drawing schematic
 - [ ] PDF report generation
 - [ ] Bar optimization, additional load cases (point loads, cantilever, continuous), sensitivity analysis
@@ -88,6 +89,17 @@ pip install -r requirements.txt
 ```bash
 python run_example.py
 ```
+
+## Running the GUI
+
+```bash
+python -m streamlit run streamlit_app.py
+```
+
+Opens an interactive form (span, dimensions, grades, loads) on the left;
+clicking **DESIGN BEAM** runs the same engine as `run_example.py` and shows
+the moment/shear/reinforcement/serviceability results, SAFE/FAIL status, and
+the SFD/BMD chart on the right.
 
 ## Running tests
 

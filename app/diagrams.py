@@ -27,12 +27,14 @@ def compute_sfd_bmd_simply_supported_udl(span_mm: float, wu_kN_per_m: float, num
     return x, V, M
 
 
-def plot_sfd_bmd(x, V, M, beam_name: str = "Beam", save_path: str = None):
+def plot_sfd_bmd(x, V, M, beam_name: str = "Beam", save_path: str = None, figsize: tuple = (8, 6)):
     """
     Plots SFD (top) and BMD (bottom) stacked, sharing the x-axis.
     Saves to save_path if given (e.g. 'sfd_bmd_B1.png'); always returns the figure.
+    figsize defaults to (8, 6) - pass a smaller value (e.g. (7, 4)) for compact
+    layouts such as the Streamlit app's results column.
     """
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(8, 6), sharex=True)
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=figsize, sharex=True)
 
     ax1.plot(x, V, color="tab:blue")
     ax1.axhline(0, color="black", linewidth=0.8)
