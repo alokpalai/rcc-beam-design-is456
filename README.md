@@ -31,10 +31,11 @@ rcc-beam-design-is456/
 │   └── diagrams.py       # SFD/BMD generation (matplotlib)
 ├── tests/               # pytest reference-example checks
 ├── excel/               # Excel verification workbook (build_workbook.py + generated .xlsx)
-├── reports/             # (planned) generated PDF design reports
+├── reports/             # generated PDF design reports (generate_report.py + generated .pdf)
 ├── drawings/             # (planned) reinforcement detailing schematics
 ├── run_example.py        # scratch script: end-to-end demo
 ├── streamlit_app.py      # interactive GUI - inputs left, results right
+├── generate_report.py    # PDF design report generator (ReportLab)
 ├── requirements.txt
 └── README.md
 ```
@@ -51,9 +52,9 @@ rcc-beam-design-is456/
 - [x] SFD/BMD plots (matplotlib)
 - [x] Excel verification workbook - Inputs, Load Calc, Flexural Design, Shear Design, Reinforcement, Serviceability, Design Summary dashboard
 - [x] Streamlit GUI - interactive form (left) + live results, status badges, and SFD/BMD chart (right)
+- [x] PDF report generation - 12-section design report (ReportLab), matches run_example.py/streamlit_app.py exactly
 - [ ] Reinforcement drawing schematic
-- [ ] PDF report generation
-- [ ] Bar optimization, additional load cases (point loads, cantilever, continuous), sensitivity analysis
+- [ ] Additional load cases (point loads, cantilever, continuous), sensitivity analysis
 
 ## IS 456 provisions implemented so far
 
@@ -100,6 +101,18 @@ Opens an interactive form (span, dimensions, grades, loads) on the left;
 clicking **DESIGN BEAM** runs the same engine as `run_example.py` and shows
 the moment/shear/reinforcement/serviceability results, SAFE/FAIL status, and
 the SFD/BMD chart on the right.
+
+## Generating a PDF report
+
+```bash
+python generate_report.py
+```
+
+Creates `reports/Beam_Design_<name>.pdf` - a 12-section report (design
+parameters, materials, loads, moment/shear, flexural design, shear design,
+reinforcement, serviceability, an IS 456 compliance table, a final summary
+with SAFE/FAIL status, and the SFD/BMD chart), using the exact same
+calculation engine as `run_example.py` and `streamlit_app.py`.
 
 ## Running tests
 
